@@ -1,0 +1,49 @@
+#define BLYNK_PRINT Serial
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+#define moterpin D7
+#define sensorpin A0
+
+
+int value1=0;
+char auth[] = "XOIX3iZr5-eT7vRUuuztB80m7OQJxMFm";
+char ssid[] = "AndroidAP";
+char pass[] = "himanshu";
+
+BlynkTimer timer;
+
+void pump()
+{
+  int value = analogRead(sensorpin);
+  int value1=map(value,550,0,0,100);
+  Blynk.virtualWrite(V1,value1);
+  if (value1<20)
+  {
+    digitalWrite(moterpin, LOW);
+  }
+  else
+  {
+    digitalWrite(moterpin ,HIGH);
+  }
+}
+void setup()
+{
+  
+  Serial.begin(9600);
+  Blynk.begin(auth, ssid, pass);
+  pinMode(moterpin,OUTPUT);
+  digitalWrite(moterpin,LOW);
+  pinMode(sensorpin,INPUT);
+  timer.setInterval(1000L, pump);
+
+
+
+}
+
+void loop()
+{
+  Blynk.run();
+  timer.run();
+
+}
